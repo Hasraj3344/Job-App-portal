@@ -6,21 +6,16 @@ const path = require('path');
 const { OpenAI } = require('openai');
 
 const app = express();
-const PORT = 5050;
+const PORT = process.env.PORT || 5050;
 
 // Optional: use dotenv to manage API keys securely
-// require('dotenv').config();
-
 require('dotenv').config();
 
 const openaiKey = process.env.REACT_APP_OPENAI_API_KEY;
+const ADZUNA_APP_ID = process.env.ADZUNA_APP_ID;
+const ADZUNA_APP_KEY = process.env.ADZUNA_APP_KEY;
 
-console.log(openaiKey); // safe use
-;
-
-// Adzuna API credentials
-const ADZUNA_APP_ID = '7b9a6cb9';
-const ADZUNA_APP_KEY = '18458069195f3cc48420cdb436febdf3';
+console.log(openaiKey); // safe use for debugging
 
 // Middleware
 app.use(cors());
@@ -57,14 +52,12 @@ app.get('/api/jobs', async (req, res) => {
       results.push(...response.data.results);
     }
 
-
     res.json({ results });
   } catch (error) {
     console.error('❌ Error fetching jobs from Adzuna:', error.response?.data || error.message);
     res.status(500).json({ error: 'Failed to fetch jobs from Adzuna' });
   }
 });
-
 
 // POST /api/match-resume - Match resume using Python + FAISS
 app.post('/api/match-resume', async (req, res) => {

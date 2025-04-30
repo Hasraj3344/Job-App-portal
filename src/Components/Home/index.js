@@ -89,27 +89,23 @@ const Home = () => {
     };
     
     useEffect(() => {
-        const fetchJobs = async () => {
-            try {
-                const response = await axios.get(
-                  `https://api.adzuna.com/v1/api/jobs/us/search/1`,
-                  {
-                    params: {
-                      app_id: '7b9a6cb9',
-                      app_key: '18458069195f3cc48420cdb436febdf3',
-                      what: 'it',
-                      where: 'us',
-                    },
-                  }
-                );
-                setJobs(response.data.results.slice(0, 6));
-              } catch (err) {
-                setError('Error fetching job listings. Please try again later.');
-              }
-        };
+      const fetchJobs = async () => {
+        try {
+          const response = await axios.get('https://<your-render-backend-url>/api/jobs', { // Update with your backend URL
+            params: {
+              what: query,
+              where: location || 'us',
+            },
+          });
+          setJobs(response.data.results.slice(0, 6));
+        } catch (err) {
+          setError('Error fetching job listings. Please try again later.');
+        }
+      };
     
-        fetchJobs();
-      }, []);
+      fetchJobs();
+    }, []);
+    
 
     return (
       <div className={classes.container}>

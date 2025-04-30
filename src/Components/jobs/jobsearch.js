@@ -29,12 +29,13 @@ const JobSearchPage = () => {
       setError(null);  // Reset error state
   
       // Fetch job data from the Adzuna API
-      const response = await axios.get('http://localhost:5050/api/jobs', {
+      const response = await axios.get('/api/fetchjobs', {
         params: {
           what: query,
           where: location || 'us',
         },
       });
+      
       
       
   
