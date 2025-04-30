@@ -1,0 +1,6 @@
+[
+    { "id": 1, "title": "Python Developer", "description": "Backend development using FastAPI and PostgreSQL" },
+    { "id": 2, "title": "Frontend Engineer", "description": "React developer with Tailwind CSS experience" },
+    { "id": 3, "title": "Data Scientist", "description": "Experience with NLP and machine learning models" }
+  ]
+  
