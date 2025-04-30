@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { jsPDF } from 'jspdf';
+import axios from 'axios';
+
 
 const ApplyPage = () => {
   const { jobId } = useParams();
