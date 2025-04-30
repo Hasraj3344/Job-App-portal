@@ -24,8 +24,8 @@ app.use(express.json());
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
-  console.log("✅ Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-console.log("✅ Supabase Key:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  console.log("✅ Supabase URL:", process.env.REACT_APP_SUPABASE_URL);
+console.log("✅ Supabase Key:", process.env.REACT_APP_SUPABASE_ANON_KEY);
   console.log("✅ OpenAI Key:", openaiKey);
   console.log("✅ Adzuna App ID:", ADZUNA_APP_ID);
   console.log("✅ Adzuna App Key:", ADZUNA_APP_KEY);
@@ -86,7 +86,9 @@ app.post('/api/match-resume', async (req, res) => {
 
     python.stderr.on('data', (data) => {
       console.error('❌ Python error:', data.toString());
+      res.status(500).json({ error: 'Python script failed: ' + data.toString() });
     });
+    
 
     python.on('close', (code) => {
       if (code !== 0) {
