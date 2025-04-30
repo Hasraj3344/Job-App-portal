@@ -56,7 +56,6 @@ app.get('/api/jobs', async (req, res) => {
 
       results.push(...response.data.results);
     }
-    console.log(`Fetched ${results.length} jobs from Adzuna`);
 
 
     res.json({ results });

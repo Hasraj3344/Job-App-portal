@@ -40,7 +40,6 @@ const JobSearchPage = () => {
   
       // Extract job data from the response
       const fetchedJobs = response.data.results;
-console.log("Fetched Jobs:", fetchedJobs); // ✅ Add this
 
   
       // Update the jobs state
@@ -76,6 +75,20 @@ console.log("Fetched Jobs:", fetchedJobs); // ✅ Add this
     }
   };
   
+  const pageRange = () => {
+    let start = Math.floor((currentPage - 1) / 10) * 10 + 1;
+    let end = Math.min(start + 9, totalPages);
+
+    return { start, end };
+  };
+
+  const { start, end } = pageRange();
+
+  // Create an array of page numbers to display
+  const pageNumbers = [];
+  for (let i = start; i <= end; i++) {
+    pageNumbers.push(i);
+  }
   
   
 
@@ -127,9 +140,27 @@ console.log("Fetched Jobs:", fetchedJobs); // ✅ Add this
         {/* Pagination Controls */}
         <div className="pagination">
           {currentPage > 1 && <button onClick={() => handlePageChange(currentPage - 1)}>{"<"}</button>}
-          {currentPage > 2 && <button onClick={() => handlePageChange(1)}>1</button>}
-          <button className="active">{currentPage}</button>
-          {currentPage < totalPages - 1 && <button onClick={() => handlePageChange(totalPages)}>{totalPages}</button>}
+          {start > 1 && (
+            <>
+              <button onClick={() => handlePageChange(1)}>1</button>
+              <span>...</span>
+            </>
+          )}
+          {pageNumbers.map((pageNumber) => (
+            <button
+              key={pageNumber}
+              className={pageNumber === currentPage ? 'active' : ''}
+              onClick={() => handlePageChange(pageNumber)}
+            >
+              {pageNumber}
+            </button>
+          ))}
+          {end < totalPages && (
+            <>
+              <span>...</span>
+              <button onClick={() => handlePageChange(totalPages)}>{totalPages}</button>
+            </>
+          )}
           {currentPage < totalPages && <button onClick={() => handlePageChange(currentPage + 1)}>{">"}</button>}
         </div>
       </div>
