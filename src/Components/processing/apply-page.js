@@ -23,7 +23,7 @@ const ApplyPage = () => {
       }
 
       try {
-        const response = await axios.get('https://job-app-portal.onrender.com/api/rewrite-resume', {
+        const response = await axios.post('https://job-app-portal.onrender.com/api/rewrite-resume', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
