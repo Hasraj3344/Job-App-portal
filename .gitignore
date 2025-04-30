@@ -30,7 +30,5 @@ backend/venv/
 .env
 .env.*
 
-.env
-.env
-.env
-.env
+bfg-1.14.0.jar
+passwords.txt
