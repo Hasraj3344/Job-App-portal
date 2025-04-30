@@ -91,7 +91,7 @@ const Home = () => {
     useEffect(() => {
       const fetchJobs = async () => {
         try {
-          const response = await axios.get('https://<your-render-backend-url>/api/jobs', { // Update with your backend URL
+          const response = await axios.get('https://job-app-portal.onrender.com/api/jobs', { // Update with your backend URL
             params: {
               what: query,
               where: location || 'us',

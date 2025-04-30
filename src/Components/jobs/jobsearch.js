@@ -29,7 +29,7 @@ const JobSearchPage = () => {
       setError(null);  // Reset error state
   
       // Fetch job data from the Adzuna API
-      const response = await axios.get('/api/fetchjobs', {
+      const response = await axios.get('https://job-app-portal.onrender.com/api/jobs', {
         params: {
           what: query,
           where: location || 'us',

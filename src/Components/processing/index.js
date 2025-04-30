@@ -118,8 +118,8 @@ const Processing = () => {
         
                 const extractedText = await fetchResumeText(bucket, path);
                 setResumeText(extractedText);
-        
-                const response = await axios.post('http://localhost:5050/api/match-resume', {
+
+                const response = await axios.get('https://job-app-portal.onrender.com/api/match-resume', {
                     resumeText: extractedText,
                     query: query,
                     location: jobLocation || 'us'
