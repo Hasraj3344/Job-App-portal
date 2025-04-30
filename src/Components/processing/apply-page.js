@@ -45,22 +45,37 @@ const ApplyPage = () => {
 
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
-
-    // Title
-    doc.setFontSize(18);
-    doc.text(`Rewritten Resume for Job ${jobId} - ${jobtitle}`, 10, 10);
-
-    // Add rewritten resume content
-    doc.setFontSize(12);
-    doc.text(editableResume, 10, 20);
-
-    // Save the PDF with a filename
-    doc.save(`rewritten_resume_job_${jobId}.pdf`);
+    const pageHeight = doc.internal.pageSize.height;
+    const margin = 10;
+  
+    // Set fonts and title
+    doc.setFontSize(14);
+    //doc.text(`Rewritten Resume for Job ${jobId} - ${jobtitle}`, margin, margin + 5);
+  
+    doc.setFontSize(10); // Smaller font to reduce spacing
+    doc.setFont("Courier", "normal"); // Match monospace look like <pre> or <textarea>
+  
+    const lineHeight = 3; // Reduced line spacing
+    const lines = doc.splitTextToSize(editableResume, 180); // Wrap text
+    let cursorY = margin + 10;
+  
+    lines.forEach(line => {
+      if (cursorY + lineHeight > pageHeight - margin) {
+        doc.addPage();
+        cursorY = margin;
+      }
+      doc.text(line, margin, cursorY);
+      cursorY += lineHeight;
+    });
+  
+    doc.save(`rewritten_resume_job_${jobtitle || jobId}.pdf`);
   };
+  
+  
 
   return (
     <PageContainer>
-      <Header>Rewritten Resume for Job {jobId} - {jobtitle}</Header>
+      <Header>Rewritten Resume for JobId: {jobId} - {jobtitle}</Header>
 
       {loading ? (
         <Loading>⏳ Rewriting your resume...</Loading>

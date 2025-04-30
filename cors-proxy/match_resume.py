@@ -58,6 +58,7 @@ for job in jobs_data:
     full_text = f"{job.get('title', '')} {job.get('description', '')}"
     job_texts.append(full_text)
     job_infos.append({
+        'id': job.get('id'),
         'title': job.get('title'),
         'description': job.get('description'),
         'company': job.get('company', {}).get('display_name'),
@@ -81,15 +82,18 @@ index = faiss.IndexFlatIP(dimension)  # Inner Product for cosine similarity
 index.add(np.array(job_embeddings))
 
 # Search top 10 jobs
-D, I = index.search(np.array(resume_embedding), 10)
+D, I = index.search(np.array(resume_embedding), 100)  # Search for top 100 matches
 
 # Prepare response
+# Prepare response - only include jobs with similarity > 10%
 top_matches = []
 for idx, score in zip(I[0], D[0]):
-    if idx < len(job_infos):
+    similarity_percent = float(score * 100)
+    if idx < len(job_infos) and similarity_percent > 10:
         job_info = job_infos[idx]
-        job_info['similarity'] = float(score * 100)  # Convert to 0-100 scale
+        job_info['similarity'] = similarity_percent
         top_matches.append(job_info)
+
 
 # Output JSON
 if top_matches:

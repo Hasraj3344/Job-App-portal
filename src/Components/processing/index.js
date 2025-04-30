@@ -22,6 +22,24 @@ const Processing = () => {
 
     const location = useLocation();
     const { query, location: jobLocation } = location.state || {};
+    
+
+    //Pagenation
+    const [currentPage, setCurrentPage] = useState(1);
+    const jobsPerPage = 10;
+    const indexOfLastJob = currentPage * jobsPerPage;
+    const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+    const jobsArray = Array.from(matchedJobs);  // Coerce to a real array
+    const currentJobs = jobsArray.slice(indexOfFirstJob, indexOfLastJob); 
+    const totalPages = Math.ceil(matchedJobs.length / jobsPerPage);
+
+
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+    
+
 
     useEffect(() => {
         const fetchSession = async () => {
@@ -134,64 +152,81 @@ const Processing = () => {
     const handleApply = (job) => {
         navigate(`/apply/${job.id}`, {
           state: {
-            jobTitle: job.title,
+            jobtitle: job.title,
             jobDescription: job.description, // make sure this field exists in your job object
             resume: resumeText,
           },
         });
       };
       
+      
 
     
 
     return (
         <>
-            <ProcessingContainer>
-                {isProcessing ? (
-                    <>
-                        <h1>Processing Your Resume...</h1>
-                        <p>Please wait while we analyze your resume and find the best job matches.</p>
-                        <Loader />
-                    </>
-                ) : errorMessage ? (
-                    <>
-                        <h1>Error</h1>
-                        <p>{errorMessage}</p>
-                    </>
-                ) : (
-                    <>
-                        <h1>Processing Complete!</h1>
-                        <ScoreContainer>
-                            <h2>Resume Match Summary</h2>
-                            {topSimilarityScore && (
-                                <TopScore>Top Match Similarity: {topSimilarityScore}%</TopScore>
-                            )}
-                        </ScoreContainer>
-                    </>
-                )}
-            </ProcessingContainer>
+    <ProcessingContainer>
+        {isProcessing ? (
+            <>
+                <h1>Processing Your Resume...</h1>
+                <p>Please wait while we analyze your resume and find the best job matches.</p>
+                <Loader />
+            </>
+        ) : errorMessage ? (
+            <>
+                <h1>Error</h1>
+                <p>{errorMessage}</p>
+            </>
+        ) : (
+            <>
+                <h1>Processing Complete!</h1>
+                <ScoreContainer>
+                    <h2>Resume Match Summary</h2>
+                    {topSimilarityScore && (
+                        <TopScore>Top Match Similarity: {topSimilarityScore}%</TopScore>
+                    )}
+                </ScoreContainer>
+            </>
+        )}
+    </ProcessingContainer>
 
-            <div style={{ marginTop: '50px' }}>
-                {!isProcessing && !errorMessage && matchedJobs.length > 0 && (
-                    <JobsList>
-                        <h2>Matching Jobs:</h2>
-                        {matchedJobs.map((job, index) => (
-                            <JobCard key={index}>
-                                <h3>{job.title}</h3>
-                                <p>{job.company} - {job.location}</p>
-                                <a href={job.url} target="_blank" rel="noopener noreferrer">View Job</a>
-                                <Similarity>Similarity: {job.similarity.toFixed(2)}%</Similarity>
-                                <button className="apply-button" onClick={() => handleApply(job)}>Apply</button>
-                            </JobCard>
+    <div style={{ marginTop: '50px' }}>
+        {!isProcessing && !errorMessage && matchedJobs.length > 0 && (
+            <>
+                <JobsList>
+                    <h2>Matching Jobs:</h2>
+                    {currentJobs.map((job, index) => (
+                        <JobCard key={index}>
+                            <h3>{job.title}</h3>
+                            <p>{job.company} - {job.location}</p>
+                            <a href={job.url} target="_blank" rel="noopener noreferrer">View Job</a>
+                            <Similarity>Similarity: {job.similarity.toFixed(2)}%</Similarity>
+                            <button className="apply-button" onClick={() => handleApply(job)}>Apply</button>
+                        </JobCard>
+                    ))}
+                </JobsList>
+
+                {totalPages > 1 && (
+                    <PaginationContainer>
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <PageButton
+                                key={i}
+                                onClick={() => handlePageChange(i + 1)}
+                                active={i + 1 === currentPage}
+                            >
+                                {i + 1}
+                            </PageButton>
                         ))}
-                    </JobsList>
+                    </PaginationContainer>
                 )}
+            </>
+        )}
 
-                {!isProcessing && !errorMessage && matchedJobs.length === 0 && (
-                    <NoJobsMessage>No matching jobs found for your resume.</NoJobsMessage>
-                )}
-            </div>
-        </>
+        {!isProcessing && !errorMessage && matchedJobs.length === 0 && (
+            <NoJobsMessage>No matching jobs found for your resume.</NoJobsMessage>
+        )}
+    </div>
+</>
     );
 };
 
@@ -204,7 +239,7 @@ const ProcessingContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 60vh;
+    min-height: 30vh;
     width: 100vw;
     background-color: #f9f9f9;
     text-align: center;
@@ -306,6 +341,47 @@ const NoJobsMessage = styled.p`
     text-align: center;
     font-size: 1.2rem;
     color: #666;
+`;
+
+const PaginationContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 10px;
+`;
+
+const PageButton = styled.button`
+    padding: 8px 12px;
+    border: 1px solid #007bff;
+    background-color: ${({ active }) => (active ? '#007bff' : '#fff')};
+    color: ${({ active }) => (active ? '#fff' : '#007bff')};
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+
+    &:hover {
+        background-color: #0056b3;
+        color: #fff;
+    }
+`;
+const ApplyButton = styled.button`
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &:hover {
+        background-color: #218838;
+    }
+`;
+const ApplyButtonContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 `;
 
 export default Processing;

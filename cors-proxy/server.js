@@ -11,9 +11,12 @@ const PORT = 5050;
 // Optional: use dotenv to manage API keys securely
 // require('dotenv').config();
 
-const openai = new OpenAI({
-  apiKey: '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', // 🔒 Replace with your actual OpenAI key or use process.env.OPENAI_API_KEY
-});
+require('dotenv').config();
+
+const openaiKey = process.env.REACT_APP_OPENAI_API_KEY;
+
+console.log(openaiKey); // safe use
+;
 
 // Adzuna API credentials
 const ADZUNA_APP_ID = '7b9a6cb9';
