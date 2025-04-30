@@ -65,7 +65,7 @@ app.get('/api/jobs', async (req, res) => {
 });
 
 // POST /api/match-resume - Match resume using Python + FAISS
-app.post('/api/match-resume', async (req, res) => {
+app.get('/api/match-resume', async (req, res) => {
   const { resumeText, query, location } = req.body;
 
   if (!resumeText || !query || !location) {
@@ -111,7 +111,7 @@ app.post('/api/match-resume', async (req, res) => {
 });
 
 // POST /api/rewrite-resume - Rewrite resume using OpenAI
-app.post('/api/rewrite-resume', async (req, res) => {
+app.get('/api/rewrite-resume', async (req, res) => {
   const { jobDescription, resume } = req.body;
 
   if (!jobDescription || !resume) {
