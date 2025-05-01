@@ -32,7 +32,7 @@ console.log("✅ Supabase Key:", process.env.REACT_APP_SUPABASE_ANON_KEY);
 });
 
 // GET /api/jobs - Fetch jobs from Adzuna
-app.post('/api/jobs', async (req, res) => {
+app.get('/api/jobs', async (req, res) => {
   const { what, where } = req.query;
 
   if (!where) {
@@ -65,7 +65,7 @@ app.post('/api/jobs', async (req, res) => {
 });
 
 // POST /api/match-resume - Match resume using Python + FAISS
-app.get('/api/match-resume', async (req, res) => {
+app.post('/api/match-resume', async (req, res) => {
   console.log("🔍 Received body:", req.body);
 
   const { resumeText, query, location } = req.body;
