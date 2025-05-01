@@ -65,52 +65,49 @@ app.get('/api/jobs', async (req, res) => {
 });
 
 // POST /api/match-resume - Match resume using Python + FAISS
-app.post('/api/match-resume', async (req, res) => {
-  console.log("🔍 Received body:", req.body);
 
+app.post('/api/match-resume', async (req, res) => {
   const { resumeText, query, location } = req.body;
 
   if (!resumeText || !query || !location) {
     return res.status(400).json({ error: 'Missing resumeText, query, or location' });
   }
 
-  try {
-    const scriptPath = path.join(__dirname, 'match_resume.py');
-    const python = spawn('python3', [scriptPath]);
+  const pyProcess = spawn('python3', ['match_resume.py']);
 
-    python.stdin.write(JSON.stringify({ resumeText, query, location }));
-    python.stdin.end();
+  let result = '';
+  let errorOutput = '';
 
-    let output = '';
-    python.stdout.on('data', (data) => {
-      output += data.toString();
-    });
+  pyProcess.stdout.on('data', (data) => {
+    result += data.toString();
+  });
 
-    python.stderr.on('data', (data) => {
-      console.error('❌ Python error:', data.toString());
-      res.status(500).json({ error: 'Python script failed: ' + data.toString() });
-    });
-    
+  pyProcess.stderr.on('data', (data) => {
+    errorOutput += data.toString();
+  });
 
-    python.on('close', (code) => {
-      if (code !== 0) {
-        console.error(`❌ Python script exited with code ${code}`);
-        return res.status(500).json({ error: 'Python script failed' });
-      }
+  pyProcess.on('close', (code) => {
+    if (errorOutput) {
+      console.error('❌ Python STDERR:', errorOutput);
+    }
 
-      try {
-        const parsed = JSON.parse(output);
-        res.json(parsed);
-      } catch (parseError) {
-        console.error('❌ Failed to parse Python output:', parseError);
-        res.status(500).json({ error: 'Invalid response from Python script' });
-      }
-    });
-  } catch (err) {
-    console.error('❌ Server error running Python script:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
+    if (code !== 0) {
+      return res.status(500).json({ error: 'Python process exited with code ' + code });
+    }
+
+    try {
+      const parsed = JSON.parse(result);
+      res.json(parsed);
+    } catch (e) {
+      console.error('❌ Failed to parse Python output:', result);
+      res.status(500).json({ error: 'Failed to parse Python output' });
+    }
+  });
+
+  pyProcess.stdin.write(JSON.stringify({ resumeText, query, location }));
+  pyProcess.stdin.end();
 });
+
 
 // POST /api/rewrite-resume - Rewrite resume using OpenAI
 app.post('/api/rewrite-resume', async (req, res) => {
