@@ -115,6 +115,8 @@ const Processing = () => {
                 const urlParts = userData.resume_url.split('/');
                 const path = urlParts.slice(-3).join('/'); // depends on your URL structure
                 const bucket = urlParts.at(-4);
+                console.log("Bucket:", bucket);
+                console.log("Path:", path);
         
                 const extractedText = await fetchResumeText(bucket, path);
                 setResumeText(extractedText);
