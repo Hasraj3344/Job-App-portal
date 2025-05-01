@@ -32,7 +32,7 @@ console.log("✅ Supabase Key:", process.env.REACT_APP_SUPABASE_ANON_KEY);
 });
 
 // GET /api/jobs - Fetch jobs from Adzuna
-app.get('/api/jobs', async (req, res) => {
+app.post('/api/jobs', async (req, res) => {
   const { what, where } = req.query;
 
   if (!where) {
@@ -111,7 +111,7 @@ app.get('/api/match-resume', async (req, res) => {
 });
 
 // POST /api/rewrite-resume - Rewrite resume using OpenAI
-app.get('/api/rewrite-resume', async (req, res) => {
+app.post('/api/rewrite-resume', async (req, res) => {
   const { jobDescription, resume } = req.body;
 
   if (!jobDescription || !resume) {
