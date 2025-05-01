@@ -66,6 +66,8 @@ app.post('/api/jobs', async (req, res) => {
 
 // POST /api/match-resume - Match resume using Python + FAISS
 app.get('/api/match-resume', async (req, res) => {
+  console.log("🔍 Received body:", req.body);
+
   const { resumeText, query, location } = req.body;
 
   if (!resumeText || !query || !location) {
