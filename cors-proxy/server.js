@@ -15,8 +15,11 @@ const openaiKey = process.env.REACT_APP_OPENAI_API_KEY;
 const ADZUNA_APP_ID = process.env.ADZUNA_APP_ID;
 const ADZUNA_APP_KEY = process.env.ADZUNA_APP_KEY;
 
-console.log(openaiKey); // safe use for debugging
 
+app.use(cors({
+  origin: 'https://job-app-portal.vercel.app', // your frontend domain
+  credentials: true,
+}));
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -24,11 +27,7 @@ app.use(express.json());
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
-  console.log("✅ Supabase URL:", process.env.REACT_APP_SUPABASE_URL);
-console.log("✅ Supabase Key:", process.env.REACT_APP_SUPABASE_ANON_KEY);
-  console.log("✅ OpenAI Key:", openaiKey);
-  console.log("✅ Adzuna App ID:", ADZUNA_APP_ID);
-  console.log("✅ Adzuna App Key:", ADZUNA_APP_KEY);
+  
 });
 
 // GET /api/jobs - Fetch jobs from Adzuna
