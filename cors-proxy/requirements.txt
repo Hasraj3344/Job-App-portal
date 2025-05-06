@@ -2,3 +2,5 @@ faiss-cpu
 openai
 numpy
 fastapi
+sentence_transformers
+requests
