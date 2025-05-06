@@ -73,7 +73,10 @@ app.post('/api/match-resume', async (req, res) => {
     return res.status(400).json({ error: 'Missing resumeText, query, or location' });
   }
 
-  const pyProcess = spawn('python3', ['match_resume.py']);
+
+  const pathToScript = path.join(__dirname, 'match_resume.py');
+const pyProcess = spawn('python3', [pathToScript]);
+
 
   let result = '';
   let errorOutput = '';
