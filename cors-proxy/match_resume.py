@@ -86,8 +86,13 @@ for job in jobs_data:
     })
 
 # Embed all job descriptions using the Sentence Transformer model
-print("Embedding job descriptions...", file=sys.stderr)
-job_embeddings = model.encode(job_texts, normalize_embeddings=True)
+try:
+    print("Embedding job descriptions...", file=sys.stderr)
+    job_embeddings = model.encode(job_texts, normalize_embeddings=True)
+except Exception as e:
+    print(f"Error while embedding job descriptions: {e}", file=sys.stderr)
+    sys.exit(1)
+
 
 # Embed the resume text using the same model
 print("Embedding resume text...", file=sys.stderr)
